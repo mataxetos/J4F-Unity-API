@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 public class ExampleApi : MonoBehaviour
 {
     public string ApiURI = "http://79.137.126.129:3939";
-    public string ContractAddress = "245A6EECE8DAC458E683A6ED1D4BF91808893CE795A75DC6C9EF9C4A39D9B099";
+    public string ContractAddress = "45AD0DB9652CA3E7108A1F4DBA1A90F6159CD6F05F82D0A9EA467AE1E398324D";
     public string AccountPassword = "prueba123";
     public string AccountAddress = "J4FA614BBA7286DE0F9F28B1145174EC1432CCE185BEB91D8DF7108D79D94B8A1DF";
     public string TransactionHash = "901E9E3698822CF6122F17CAFA2138537732564C0A9B8E35DFFFB0126E63F38B";
@@ -40,8 +40,11 @@ public class ExampleApi : MonoBehaviour
     private async Task CallApi()
     {
         //Get web3 pointer
-        var web3 = J4F.Web3(ApiURI);
-        
+        var web3 = await J4F.Web3(ApiURI);
+        if (web3 == null)
+        {
+            return;
+        }
         
         //Get contract pointer
         var contract = await web3.GetContractAsync(ContractAddress);
@@ -76,7 +79,6 @@ public class ExampleApi : MonoBehaviour
         var account = await web3.GetAccountAsync(AccountAddress, AccountPassword);
         if (account != null)
         {
-            /*
             //Get account balance & pending balance
             var balance = await account.GetBalanceAsync();
             var pendingBalance = await account.GetPendingBalanceAsync();
@@ -88,13 +90,13 @@ public class ExampleApi : MonoBehaviour
             {
                 Debug.Log("Inventory = " + JsonConvert.SerializeObject(inventory));
             }
-            */
             
-            var buyDonutFunction = contract.GetFunction("BuyDonut");
-            if (buyDonutFunction != null)
+            /*
+            var buyBoxFunction = contract.GetFunction("BuyBox");
+            if (buyBoxFunction != null)
             {
                 //Get Data parsed to execute function
-                var dataParsedBuyBox = await buyDonutFunction.CallWriteAsync();
+                var dataParsedBuyBox = await buyBoxFunction.CallWriteAsync();
                 
                 //Get required gas to execute function
                 var requiredGas = await web3.CalculateGasAsync(ContractAddress, dataParsedBuyBox);
@@ -113,6 +115,7 @@ public class ExampleApi : MonoBehaviour
                 var pendingTransactionDto = await web3.GetPendingTransactionAsync(transaction.Hash);
                 Debug.Log("Pending Transaction Info: " + JsonConvert.SerializeObject(pendingTransactionDto));   
             }
+            */
         }
     }
 }
