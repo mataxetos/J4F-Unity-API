@@ -34,7 +34,7 @@ namespace J4FApi
     {
         private readonly HttpClient _client;
 
-        public J4F()
+        private J4F()
         {
             _client = new HttpClient();
             _client.DefaultRequestHeaders.Accept.Clear();
@@ -45,11 +45,22 @@ namespace J4FApi
         /// Create a Web3 client to interact with J4F Blockchain
         /// </summary>
         /// <param name="uri"></param>
-        public static J4F Web3(string uri)
+        public static async Task<J4F> Web3(string uri)
         {
             var j4F = new J4F();
             j4F._client.BaseAddress = new Uri(uri);
-            return j4F;
+            
+            try
+            {
+                var response = await j4F._client.GetAsync($"/");
+                response.EnsureSuccessStatusCode();
+                return j4F;
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("J4F.Web3.Error: " + e.Message);
+                return null;
+            }
         }
         
         /// <summary>
