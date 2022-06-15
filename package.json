@@ -1,0 +1,19 @@
+{
+  "name": "dev.j4f.api",
+  "version": "1.0.0",
+  "displayName": "J4F Blockchain API",
+  "description": "This api provides the base functionality to interact with the J4F blockchain.",
+  "unity": "2020.3",
+  "unityRelease": "3f1",
+  "keywords": [
+    "J4F",
+    "blockchain",
+    "J4F"
+  ],
+  "author": {
+    "name": "MaTaXeToS",
+    "email": "mataxetos@mataxetos.es",
+    "url": "https://j4f.dev"
+  },
+  "type": "tool"
+}
