@@ -18,8 +18,10 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using J4FApi.Dto.Contracts;
 using UnityEngine;
 using Newtonsoft.Json;
 using J4FApi.Dto.Transactions;
@@ -91,6 +93,62 @@ namespace J4FApi.Transactions
             catch (Exception e)
             {
                 Debug.LogError("Transaction.GetTransaction.Error: " + e.Message);
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Get RC10 transactions of transaction
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Rc10TransactionDto> GetRc10Transactions()
+        {
+            try
+            {
+                var response = await Client.GetAsync($"/contract/rc10TransactionsByTxnHash?Hash={Hash}");
+                response.EnsureSuccessStatusCode();
+                var responseJson = await response.Content.ReadAsStringAsync();
+                var contractRc10Transactions = JsonConvert.DeserializeObject<Rc10TransactionDto>(responseJson);
+
+                if (contractRc10Transactions?.Hash == null)
+                {
+                    return null;
+                }
+                
+                return contractRc10Transactions;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Transaction.GetRc10Transactions.Error: " + e.Message);
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Get RC20 transactions of transaction
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Rc20TransactionDto> GetRc20Transactions()
+        {
+            try
+            {
+                var response = await Client.GetAsync($"/contract/rc20TransactionsByTxnHash?Hash={Hash}");
+                response.EnsureSuccessStatusCode();
+                var responseJson = await response.Content.ReadAsStringAsync();
+                var contractRc10Transactions = JsonConvert.DeserializeObject<Rc20TransactionDto>(responseJson);
+
+                if (contractRc10Transactions?.Hash == null)
+                {
+                    return null;
+                }
+                
+                return contractRc10Transactions;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Transaction.GetRc20Transactions.Error: " + e.Message);
                 return null;
             }
         }

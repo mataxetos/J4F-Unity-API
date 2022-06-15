@@ -29,7 +29,7 @@ public class ExampleApi : MonoBehaviour
     public string ContractAddress = "45AD0DB9652CA3E7108A1F4DBA1A90F6159CD6F05F82D0A9EA467AE1E398324D";
     public string AccountPassword = "prueba123";
     public string AccountAddress = "J4FA614BBA7286DE0F9F28B1145174EC1432CCE185BEB91D8DF7108D79D94B8A1DF";
-    public string TransactionHash = "901E9E3698822CF6122F17CAFA2138537732564C0A9B8E35DFFFB0126E63F38B";
+    public string TransactionHash = "1BFFA739E9170DB5627C877E94CB0261553DA4C5D8086592984E8157ACE93536";
     
     // Start is called before the first frame update
     private async void Start()
@@ -59,11 +59,27 @@ public class ExampleApi : MonoBehaviour
             Debug.Log(getAdnFunction.Method+"(1) = " + responseGetAdnFunction);
         }
 
-        /*
+        var contractRc10Transactions = await contract.GetRc10Transactions();
+        foreach (var rc10Transaction in contractRc10Transactions)
+        {
+            Debug.Log("Contract RC10 Transaction Info: " + JsonConvert.SerializeObject(rc10Transaction));   
+        }
+        
+        var contractRc20Transactions = await contract.GetRc20Transactions();
+        foreach (var rc20Transaction in contractRc20Transactions)
+        {
+            Debug.Log("Contract RC20 Transaction Info: " + JsonConvert.SerializeObject(rc20Transaction));   
+        }
+
         //Get transaction info
         var transactionDto = await web3.GetTransactionAsync(TransactionHash);
         Debug.Log("Transaction Info: " + JsonConvert.SerializeObject(transactionDto));
-        */
+        
+        var rc10Transactions = await transactionDto.GetRc10Transactions();
+        Debug.Log("RC10 Transaction Info: " + JsonConvert.SerializeObject(rc10Transactions));
+        
+        var rc20Transactions = await transactionDto.GetRc20Transactions();
+        Debug.Log("RC20 Transaction Info: " + JsonConvert.SerializeObject(rc20Transactions));
 
         /*
         //Create new account

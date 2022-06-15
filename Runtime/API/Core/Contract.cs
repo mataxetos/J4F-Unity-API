@@ -18,10 +18,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using J4FApi.Dto.Contracts;
+using J4FApi.Utilities;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace J4FApi.Contracts
 {
@@ -49,7 +52,7 @@ namespace J4FApi.Contracts
         public static async Task<Contract> GetContractAsync(HttpClient client, string contractHash)  
         {       
             return await _GetContract(client, contractHash);
-        }  
+        }
         
         /// <summary>
         /// Get contract info and methods
@@ -114,6 +117,50 @@ namespace J4FApi.Contracts
             catch (Exception e)
             {
                 UnityEngine.Debug.LogError("Contract.Error: " + e.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get RC10 transactions of contract
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<List<Rc10TransactionDto>> GetRc10Transactions()
+        {
+            try
+            {
+                var response = await Client.GetAsync($"/contract/rc10Transactions?Hash={Hash}");
+                response.EnsureSuccessStatusCode();
+                var responseJson = await response.Content.ReadAsStringAsync();
+                var contractRc10Transactions = JsonConvert.DeserializeObject<List<Rc10TransactionDto>>(responseJson);
+                return contractRc10Transactions;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Contract.GetRc10Transactions.Error: " + e.Message);
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Get RC20 transactions of contract
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<List<Rc20TransactionDto>> GetRc20Transactions()
+        {
+            try
+            {
+                var response = await Client.GetAsync($"/contract/rc20Transactions?Hash={Hash}");
+                response.EnsureSuccessStatusCode();
+                var responseJson = await response.Content.ReadAsStringAsync();
+                var contractRc10Transactions = JsonConvert.DeserializeObject<List<Rc20TransactionDto>>(responseJson);
+                return contractRc10Transactions;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Contract.GetRc20Transactions.Error: " + e.Message);
                 return null;
             }
         }
