@@ -1,6 +1,6 @@
 {
   "name": "dev.j4f.api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "J4F Blockchain API",
   "description": "This api provides the base functionality to interact with the J4F blockchain.",
   "unity": "2020.3",
