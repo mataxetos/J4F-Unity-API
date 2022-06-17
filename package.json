@@ -1,6 +1,6 @@
 {
   "name": "dev.j4f.api",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "displayName": "J4F Blockchain API",
   "description": "This api provides the base functionality to interact with the J4F blockchain.",
   "unity": "2020.3",
@@ -11,7 +11,7 @@
     "J4F"
   ],
   "author": {
-    "name": "MaTaXeToS",
+    "name": "Just4Fun",
     "email": "mataxetos@mataxetos.es",
     "url": "https://j4f.dev"
   },
