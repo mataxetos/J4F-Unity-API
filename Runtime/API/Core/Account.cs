@@ -18,6 +18,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -39,6 +40,47 @@ namespace J4FApi.Accounts
             Client = client;
             Hash = accountHash;
             Password = password;
+        }
+        
+        private Account(HttpClient client, string accountHash, string password, string publicKey, string privateKey)
+        {
+            Client = client;
+            Hash = accountHash;
+            Password = password;
+
+            var pathWallet = Path.Combine(Application.persistentDataPath, "Wallets");
+            var walletFileName = accountHash;
+            var pathToSave = Path.Combine(pathWallet, walletFileName+".dat");
+
+            if (!Directory.Exists(pathWallet))
+            {
+                Directory.CreateDirectory(pathWallet);
+            }
+
+            if (File.Exists(pathToSave)) return;
+            
+            var privateKeyDto = JsonConvert.DeserializeObject<PrivateKeyDto>(privateKey);
+            var publicKeyDto = JsonConvert.DeserializeObject<PublicKeyDto>(publicKey);
+                
+            var walletLines = new string[]
+            {
+                "[PRIVATE]",
+                "D = " + privateKeyDto.D,
+                "DP = " + privateKeyDto.Dp,
+                "DQ = " + privateKeyDto.Dq,
+                "Exponent = " + privateKeyDto.Exponent,
+                "InverseQ = " + privateKeyDto.InverseQ,
+                "Modulus = " + privateKeyDto.Modulus,
+                "P = " + privateKeyDto.P,
+                "Q = " + privateKeyDto.Q,
+                "",
+                "[PUBLIC]",
+                "Exponent = " + publicKeyDto.Exponent,
+                "Modulus" + publicKeyDto.Modulus,
+            };
+            
+            //Write wallet file
+            File.WriteAllLines(pathToSave,walletLines);
         }
         
         /// <summary>
@@ -123,13 +165,13 @@ namespace J4FApi.Accounts
                 response.EnsureSuccessStatusCode();
                 var responseJson = await response.Content.ReadAsStringAsync();
                 
-                var dataParsed = JsonConvert.DeserializeObject<CreateAccountDto>(responseJson);
-                if (dataParsed == null)
+                var accountDto = JsonConvert.DeserializeObject<CreateAccountDto>(responseJson);
+                if (accountDto == null)
                 {
                     throw new Exception("CreateAccountDto is null");
                 }
                 
-                return new Account(client, dataParsed.Wallet, password);
+                return new Account(client, accountDto.Wallet, password, accountDto.PublicKey, accountDto.PrivateKey);
             }
             catch (Exception e)
             {
